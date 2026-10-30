@@ -1,0 +1,46 @@
+﻿<?xml version="1.0"?>
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  http://go.microsoft.com/fwlink/?LinkId=169433
+  -->
+<configuration>
+  <appSettings>
+    <add key="ValidationSettings:UnobtrusiveValidationMode" value="None"/>
+  </appSettings>
+  <connectionStrings>
+    <remove name="mySQLconn"/>
+    <add name="mySQLconn" connectionString="Data Source=localhost;Database=3gbhsrp;User ID=root; Password=''" providerName="MySql.Data.MySqlClient"/>
+    <!--<add name="mySQLconn" connectionString="Server=198.71.225.64; Port=3306; Database=bookhsrp;User Id=bookhsrp; Pooling=True; Password=Book@123; Persist Security Info=True;Convert Zero Datetime=True" providerName="MySql.Data.MySqlClient" />-->
+  </connectionStrings>
+  <!--
+    For a description of web.config changes see http://go.microsoft.com/fwlink/?LinkId=235367.
+
+    The following attributes can be set on the <httpRuntime> tag.
+      <system.Web>
+        <httpRuntime targetFramework="4.8.1" />
+      </system.Web>
+  -->
+  <system.web>
+    <compilation debug="true" targetFramework="4.8">
+      <assemblies>
+        <!--<httpRuntime executionTimeout="240" maxRequestLength="2048000" />-->
+        <add assembly="WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      </assemblies>
+    </compilation>
+    <customErrors mode="Off"/>
+    <httpRuntime maxRequestLength="1048576" executionTimeout="9001"/>
+    <authorization>
+      <allow users="*"/>
+    </authorization>
+    <securityPolicy>
+      <trustLevel name="Full" policyFile="internal"/>
+    </securityPolicy>
+    <trust level="Full"/>
+    <webServices>
+      <protocols>
+        <add name="HttpGet"/>
+        <add name="HttpPost"/>
+      </protocols>
+    </webServices>
+  </system.web>
+</configuration>

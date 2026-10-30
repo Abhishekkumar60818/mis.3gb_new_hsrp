@@ -1,0 +1,304 @@
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+
+/// <summary>
+/// Summary description for SellerSalesData
+/// </summary>
+public class SellerSalesData
+{
+    public SellerSalesData()
+    {
+        //
+        // TODO: Add constructor logic here
+        //
+    }
+    public SellerSalesData(int ids)
+    {
+        Connection connect = new Connection();
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@id", ids));
+        using (DataSet ds = connect.GetDataset("select * from sellersales where id=@id", param))
+        {
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                HasValue = true;
+                id = int.Parse(ds.Tables[0].Rows[0]["id"].ToString());
+                sellerid = int.Parse(ds.Tables[0].Rows[0]["sellerid"].ToString());
+                npid = int.Parse(ds.Tables[0].Rows[0]["npid"].ToString());
+                status = int.Parse(ds.Tables[0].Rows[0]["status"].ToString());
+                registrationdate = DateTime.Parse(ds.Tables[0].Rows[0]["registrationdate"].ToString());
+                manufacturedate = (ds.Tables[0].Rows[0]["manufacturedate"].ToString());
+                orderdate= DateTime.Parse(ds.Tables[0].Rows[0]["orderdate"].ToString());
+                name = ds.Tables[0].Rows[0]["name"].ToString();
+                contactno = ds.Tables[0].Rows[0]["contactno"].ToString();
+                state = ds.Tables[0].Rows[0]["state"].ToString();
+                city = ds.Tables[0].Rows[0]["city"].ToString();
+                registrationno = ds.Tables[0].Rows[0]["registrationno"].ToString();
+                chasisno = ds.Tables[0].Rows[0]["chasisno"].ToString();
+                engineno = ds.Tables[0].Rows[0]["engineno"].ToString();
+                vehicletype = ds.Tables[0].Rows[0]["vehicletype"].ToString();
+                //model = ds.Tables[0].Rows[0]["model"].ToString();
+                fueltype = ds.Tables[0].Rows[0]["fueltype"].ToString();
+                ordertype = ds.Tables[0].Rows[0]["ordertype"].ToString();
+                classtype = ds.Tables[0].Rows[0]["classtype"].ToString();
+                tlp = ds.Tables[0].Rows[0]["tlp"].ToString();
+                rc = ds.Tables[0].Rows[0]["rc"].ToString();
+                odtype = ds.Tables[0].Rows[0]["odtype"].ToString();
+            }
+            else
+            {
+                HasValue = false;
+            }
+        }
+        connect.Dispose();
+        connect = null;
+    }
+    public SellerSalesData(string vehicleno)
+    {
+        Connection connect = new Connection();
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@registrationno", vehicleno));
+        using (DataSet ds = connect.GetDataset("select * from sellersales where  registrationno=@registrationno and status=1 and npid=0", param))
+        {
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                HasValue = true;
+                id = int.Parse(ds.Tables[0].Rows[0]["id"].ToString());
+                sellerid = int.Parse(ds.Tables[0].Rows[0]["sellerid"].ToString());
+                npid = int.Parse(ds.Tables[0].Rows[0]["npid"].ToString());
+                status = int.Parse(ds.Tables[0].Rows[0]["status"].ToString());
+                registrationdate = DateTime.Parse(ds.Tables[0].Rows[0]["registrationdate"].ToString());
+                manufacturedate = (ds.Tables[0].Rows[0]["manufacturedate"].ToString());
+                orderdate = DateTime.Parse(ds.Tables[0].Rows[0]["orderdate"].ToString());
+                name = ds.Tables[0].Rows[0]["name"].ToString();
+                contactno = ds.Tables[0].Rows[0]["contactno"].ToString();
+                state = ds.Tables[0].Rows[0]["state"].ToString();
+                city = ds.Tables[0].Rows[0]["city"].ToString();
+                registrationno = ds.Tables[0].Rows[0]["registrationno"].ToString();
+                chasisno = ds.Tables[0].Rows[0]["chasisno"].ToString();
+                engineno = ds.Tables[0].Rows[0]["engineno"].ToString();
+                vehicletype = ds.Tables[0].Rows[0]["vehicletype"].ToString();
+                //model = ds.Tables[0].Rows[0]["model"].ToString();
+                fueltype = ds.Tables[0].Rows[0]["fueltype"].ToString();
+                ordertype = ds.Tables[0].Rows[0]["ordertype"].ToString();
+                classtype = ds.Tables[0].Rows[0]["classtype"].ToString();
+                tlp = ds.Tables[0].Rows[0]["tlp"].ToString();
+                rc = ds.Tables[0].Rows[0]["rc"].ToString();
+                odtype = ds.Tables[0].Rows[0]["odtype"].ToString();
+            }
+            else
+            {
+                HasValue = false;
+            }
+        }
+        connect.Dispose();
+        connect = null;
+    }
+    public SellerSalesData(string vehicleno, string abc)
+    {
+        Connection connect = new Connection();
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@registrationno", vehicleno));
+        using (DataSet ds = connect.GetDataset("select * from sellersales where  registrationno=@registrationno and status=1 and npid=1", param))
+        {
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                HasValue = true;
+                id = int.Parse(ds.Tables[0].Rows[0]["id"].ToString());
+                sellerid = int.Parse(ds.Tables[0].Rows[0]["sellerid"].ToString());
+                npid = int.Parse(ds.Tables[0].Rows[0]["npid"].ToString());
+                status = int.Parse(ds.Tables[0].Rows[0]["status"].ToString());
+                registrationdate = DateTime.Parse(ds.Tables[0].Rows[0]["registrationdate"].ToString());
+                manufacturedate = (ds.Tables[0].Rows[0]["manufacturedate"].ToString());
+                orderdate = DateTime.Parse(ds.Tables[0].Rows[0]["orderdate"].ToString());
+                name = ds.Tables[0].Rows[0]["name"].ToString();
+                contactno = ds.Tables[0].Rows[0]["contactno"].ToString();
+                state = ds.Tables[0].Rows[0]["state"].ToString();
+                city = ds.Tables[0].Rows[0]["city"].ToString();
+                registrationno = ds.Tables[0].Rows[0]["registrationno"].ToString();
+                chasisno = ds.Tables[0].Rows[0]["chasisno"].ToString();
+                engineno = ds.Tables[0].Rows[0]["engineno"].ToString();
+                vehicletype = ds.Tables[0].Rows[0]["vehicletype"].ToString();
+                //model = ds.Tables[0].Rows[0]["model"].ToString();
+                fueltype = ds.Tables[0].Rows[0]["fueltype"].ToString();
+                ordertype = ds.Tables[0].Rows[0]["ordertype"].ToString();
+                classtype = ds.Tables[0].Rows[0]["classtype"].ToString();
+                tlp = ds.Tables[0].Rows[0]["tlp"].ToString();
+                rc = ds.Tables[0].Rows[0]["rc"].ToString();
+                odtype = ds.Tables[0].Rows[0]["odtype"].ToString();
+            }
+            else
+            {
+                HasValue = false;
+            }
+        }
+        connect.Dispose();
+        connect = null;
+    }
+    public SellerSalesData(string Name,string mobile,string vehicleno,string chasis,string engine)
+    {
+        Connection connect = new Connection();
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@name", Name));
+        param.Add(new MySqlParameter("@contactno", mobile));
+        param.Add(new MySqlParameter("@registrationno", vehicleno));
+        param.Add(new MySqlParameter("@chasisno", chasis));
+        param.Add(new MySqlParameter("@engineno", engine));
+        using (DataSet ds = connect.GetDataset("select * from sellersales where name=@name and contactno=@contactno and registrationno=@registrationno and chasisno=@chasisno and engineno=@engineno and status=1", param))
+        {
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                HasValue = true;
+                id = int.Parse(ds.Tables[0].Rows[0]["id"].ToString());
+                sellerid = int.Parse(ds.Tables[0].Rows[0]["sellerid"].ToString());
+                npid = int.Parse(ds.Tables[0].Rows[0]["npid"].ToString());
+                status = int.Parse(ds.Tables[0].Rows[0]["status"].ToString());
+                registrationdate = DateTime.Parse(ds.Tables[0].Rows[0]["registrationdate"].ToString());
+                manufacturedate = (ds.Tables[0].Rows[0]["manufacturedate"].ToString());
+                orderdate = DateTime.Parse(ds.Tables[0].Rows[0]["orderdate"].ToString());
+                name = ds.Tables[0].Rows[0]["name"].ToString();
+                contactno = ds.Tables[0].Rows[0]["contactno"].ToString();
+                state = ds.Tables[0].Rows[0]["state"].ToString();
+                city = ds.Tables[0].Rows[0]["city"].ToString();
+                registrationno = ds.Tables[0].Rows[0]["registrationno"].ToString();
+                chasisno = ds.Tables[0].Rows[0]["chasisno"].ToString();
+                engineno = ds.Tables[0].Rows[0]["engineno"].ToString();
+                vehicletype = ds.Tables[0].Rows[0]["vehicletype"].ToString();
+               // model = ds.Tables[0].Rows[0]["model"].ToString();
+                fueltype = ds.Tables[0].Rows[0]["fueltype"].ToString();
+                ordertype = ds.Tables[0].Rows[0]["ordertype"].ToString();
+                classtype = ds.Tables[0].Rows[0]["classtype"].ToString();
+                tlp = ds.Tables[0].Rows[0]["tlp"].ToString();
+                rc = ds.Tables[0].Rows[0]["rc"].ToString();
+                odtype = ds.Tables[0].Rows[0]["odtype"].ToString();
+            }
+            else
+            {
+                HasValue = false;
+            }
+        }
+        connect.Dispose();
+        connect = null;
+    }
+    public void update(int id)
+    {
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@id", id));
+        param.Add(new MySqlParameter("@name", name));
+        param.Add(new MySqlParameter("@contactno", contactno));
+        param.Add(new MySqlParameter("@state", state));
+        param.Add(new MySqlParameter("@city", city));
+        param.Add(new MySqlParameter("@registrationno", registrationno));
+        param.Add(new MySqlParameter("@chasisno", chasisno));
+        param.Add(new MySqlParameter("@engineno", engineno));
+        param.Add(new MySqlParameter("@vehicletype", vehicletype));
+        param.Add(new MySqlParameter("@classtype", classtype));
+        param.Add(new MySqlParameter("@registrationdate", registrationdate));
+        param.Add(new MySqlParameter("@fueltype", fueltype));
+        param.Add(new MySqlParameter("@ordertype", ordertype));
+        param.Add(new MySqlParameter("@manufacturedate", manufacturedate));
+       // param.Add(new MySqlParameter("@sellerid", sellerid));
+        //param.Add(new MySqlParameter("@npid", npid));
+       
+        Connection connect = new Connection();
+        connect.ExecStatement("UPDATE sellersales SET name=@name, contactno=@contactno, state=@state,city=@city, registrationno=@registrationno, chasisno=@chasisno, engineno=@engineno, vehicletype=@vehicletype, classtype=@classtype, registrationdate=@registrationdate, fueltype=@fueltype, ordertype=@ordertype, manufacturedate=@manufacturedate  WHERE id=@id", param);
+        connect.Dispose();
+        connect = null;
+
+    }
+    public void BlockUser(int ids)
+    {
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@id", ids));
+        param.Add(new MySqlParameter("@status", 0));
+        Connection connect = new Connection();
+        connect.ExecStatement("UPDATE sellersales SET status=@status WHERE id=@id", param);
+        connect.Dispose();
+        connect = null;
+    }
+    public void updateVahaan(int ids, string Vahaanst)
+    {
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@id", ids));
+        param.Add(new MySqlParameter("@vupdate", Vahaanst));
+        Connection connect = new Connection();
+        connect.ExecStatement("UPDATE sellersales SET vupdate=@vupdate WHERE id=@id", param);
+        connect.Dispose();
+        connect = null;
+    }
+    public void UnBlockUser(int ids)
+    {
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@id", ids));
+        param.Add(new MySqlParameter("@status", 1));
+        Connection connect = new Connection();
+        connect.ExecStatement("UPDATE sellersales SET status=@status WHERE id=@id", param);
+        connect.Dispose();
+        connect = null;
+    }
+    public void Save()
+    {
+        List<MySqlParameter> param = new List<MySqlParameter>();
+        param.Add(new MySqlParameter("@name", name));
+        param.Add(new MySqlParameter("@contactno", contactno));
+        param.Add(new MySqlParameter("@state", state));
+        param.Add(new MySqlParameter("@city", city));
+        param.Add(new MySqlParameter("@registrationno", registrationno));
+        param.Add(new MySqlParameter("@chasisno", chasisno));
+        param.Add(new MySqlParameter("@engineno", engineno));
+        param.Add(new MySqlParameter("@vehicletype", vehicletype));
+        param.Add(new MySqlParameter("@classtype", classtype));
+        //param.Add(new MySqlParameter("@model", model));
+        param.Add(new MySqlParameter("@registrationdate", registrationdate));
+        param.Add(new MySqlParameter("@fueltype", fueltype));
+        param.Add(new MySqlParameter("@ordertype", ordertype));
+        param.Add(new MySqlParameter("@manufacturedate", manufacturedate));
+        param.Add(new MySqlParameter("@sellerid", sellerid));
+        param.Add(new MySqlParameter("@orderdate", orderdate));
+        param.Add(new MySqlParameter("@tlp", tlp));
+        param.Add(new MySqlParameter("@ext2", ext2));
+        param.Add(new MySqlParameter("@rc", rc));
+        Connection connect = new Connection();
+        connect.ExecStatement("INSERT INTO sellersales(name,contactno,state,city,registrationno,chasisno,engineno,vehicletype,classtype,registrationdate,fueltype,ordertype,manufacturedate,sellerid,orderdate,ext2,tlp,rc) VALUES(@name,@contactno,@state,@city,@registrationno,@chasisno,@engineno,@vehicletype,@classtype,@registrationdate,@fueltype,@ordertype,@manufacturedate,@sellerid,@orderdate,@ext2,@tlp,@rc)", param);
+        connect.Dispose();
+        connect = null;
+    }
+    public DataSet getDetails(String query)
+    {
+        Connection connect = new Connection();
+        List<MySqlParameter> param = new List<MySqlParameter>();
+
+        DataSet ds = connect.GetDataset(query);
+        return ds;
+    }
+
+
+    public int id { get; set; }
+    public int sellerid { get; set; }
+    public int npid { get; set; }
+    public int status { get; set; }
+    public DateTime orderdate { get; set; }
+    public int ext2 { get; set; }
+    public string name { get; set; }
+    public string contactno { get; set; }
+    public string state { get; set; }
+    public string city { get; set; }
+    public string registrationno { get; set; }
+    public string chasisno { get; set; }
+    public string odtype { get; set; }
+    public string engineno { get; set; }
+    public string vehicletype { get; set; }
+    //public string model { get; set; }
+    public string fueltype { get; set; }
+    public string ordertype { get; set; }
+    public string classtype { get; set; }
+    public DateTime registrationdate { get; set; }
+    public string manufacturedate { get; set; }
+    public string tlp { get; set; }
+    public string rc { get; set; }
+    public bool HasValue { get; set; }
+}

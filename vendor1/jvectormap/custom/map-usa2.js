@@ -1,0 +1,1 @@
+$((function(){$("#us-map3").vectorMap({map:"us_aea_en",scaleColors:["#ffffff"],normalizeFunction:"polynomial",zoomOnScroll:!1,zoomMin:1,hoverColor:!0,regionStyle:{initial:{fill:"#333333"},hover:{"fill-opacity":.8}},markerStyle:{initial:{fill:"#ec4f3d",stroke:"#FFFFFF",r:5}},backgroundColor:"transparent"})}));

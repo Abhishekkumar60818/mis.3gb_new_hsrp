@@ -1,0 +1,156 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/seller/SellerMaster.master" AutoEventWireup="true" CodeFile="sstock.aspx.cs" Inherits="seller_sstock" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+
+        <div class="page-body">
+            <div class="container-fluid">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3>Stock View</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="default.aspx"><i data-feather="home"></i></a></li>
+
+                                <li class="breadcrumb-item active">Stock View</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-sm-12">
+                <asp:Panel ID="pnlView" runat="server">
+
+                    <div class="card">
+                        <div class="card-header pb-0">
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive theme-scrollbar">
+                                <div id="basic-1_wrapper" class="dataTables_wrapper no-footer">
+                                    <div class="row" style="margin-bottom: 10px">
+                                        <div class="col-md-6">
+                                            <div class="pull-left">
+                                                <asp:DropDownList ID="ddlPageQuantity" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlPageQuantity_SelectedIndexChanged">
+                                                    <asp:ListItem>10</asp:ListItem>
+                                                    <asp:ListItem>20</asp:ListItem>
+                                                    <asp:ListItem>50</asp:ListItem>
+                                                    <asp:ListItem>100</asp:ListItem>
+                                                    <asp:ListItem>250</asp:ListItem>
+                                                    <asp:ListItem>500</asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="pull-right">
+                                                <asp:TextBox ID="txtSearch" placeholder="Enter Laser No." runat="server" CssClass="form-control" AutoPostBack="true" OnTextChanged="txtSearch_TextChanged"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <asp:ScriptManager ID="MainScriptManager" runat="server" />
+                                    <asp:UpdatePanel ID="pnlHelloWorld" runat="server">
+                                        <ContentTemplate>
+                                            <asp:Repeater ID="rptResult" runat="server" OnItemCommand="rptrUser_ItemCommand">
+                                                <HeaderTemplate>
+                                                    <table id="example" class="display nowrap" style="width: 100%">
+
+                                                        <thead>
+                                                            <tr role="row">
+                                                                <th class="sorting_asc" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: auto;">Laser No.</th>
+
+                                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: auto">Size</th>
+                                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: auto">Class</th>
+                                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: auto">Sold Status</th>
+                                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: auto">Registration</th>
+                                                            </tr>
+                                                        </thead>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <tbody>
+                                                        <asp:Repeater ID="rptrUser" runat="server">
+                                                            <ItemTemplate>
+                                                                <tr>
+                                                                    <td class="table-plus"><%#Eval("laserno") %></td>
+                                                                    <td><%#Eval("sizes") %></td>
+                                                                    <td><%#Eval("type") %></td>
+                                                                    <td><%#Eval("soldstatus") %></td>
+                                                                    <td><%#Eval("RegistrationNo") %></td>
+                                                                </tr>
+                                                            </ItemTemplate>
+                                                        </asp:Repeater>
+                                                    </tbody>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </table>
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                            <div style="margin-top: 20px; margin-bottom: 15px;">
+                                                <table style="">
+                                                    <tr>
+                                                        <td style="margin-left: 10px; margin-right: 10px; padding: 0px 10px 0px 10px; border: 1px solid">
+                                                            <asp:LinkButton ID="lbFirst" runat="server" OnClick="lbFirst_Click">First</asp:LinkButton>
+                                                        </td>
+                                                        <td style="margin-left: 10px; margin-right: 10px; padding: 0px 10px 0px 10px; border: 1px solid">
+                                                            <asp:LinkButton ID="lbPrevious" runat="server" OnClick="lbPrevious_Click">Previous</asp:LinkButton>
+                                                        </td>
+                                                        <td>
+                                                            <asp:DataList ID="rptPaging" runat="server"
+                                                                OnItemCommand="rptPaging_ItemCommand"
+                                                                OnItemDataBound="rptPaging_ItemDataBound" RepeatDirection="Horizontal">
+                                                                <ItemTemplate>
+                                                                    <asp:LinkButton ID="lbPaging" runat="server" CssClass="FooterView"
+                                                                        CommandArgument='<%# Eval("PageIndex") %>' CommandName="newPage"
+                                                                        Text='<%# Eval("PageText") %> '></asp:LinkButton>
+                                                                </ItemTemplate>
+                                                            </asp:DataList>
+                                                        </td>
+                                                        <td style="margin-left: 10px; margin-right: 10px; padding: 0px 10px 0px 10px; border: 1px solid">
+                                                            <asp:LinkButton ID="lbNext" runat="server" OnClick="lbNext_Click">Next</asp:LinkButton>
+                                                        </td>
+                                                        <td style="margin-left: 10px; margin-right: 10px; padding: 0px 10px 0px 10px; border: 1px solid">
+                                                            <asp:LinkButton ID="lbLast" runat="server" OnClick="lbLast_Click">Last</asp:LinkButton>
+                                                        </td>
+                                                        <td style="margin-left: 10px; margin-right: 10px; padding: 0px 10px 0px 10px; border: 1px solid">
+                                                            <asp:Label ID="lblpage" runat="server" Text=""></asp:Label>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </asp:Panel>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js"></script>
+    <script>
+        new DataTable('#example', {
+            layout: {
+                topStart: {
+                    buttons: ['csv', 'excel', 'pdf', 'print']
+                }
+            }
+        });
+    </script>
+</asp:Content>

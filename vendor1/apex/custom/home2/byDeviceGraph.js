@@ -1,0 +1,1 @@
+var options={chart:{height:290,type:"donut"},labels:["Desktop","Tablet","Mobile"],series:[6e4,45e3,15e3],legend:{position:"bottom"},dataLabels:{enabled:!1},stroke:{width:0},colors:["#ffd5c0","#ff7951","#ffb893"],tooltip:{y:{formatter:function(e){return"$"+e}}}},chart=new ApexCharts(document.querySelector("#byDevice"),options);chart.render();

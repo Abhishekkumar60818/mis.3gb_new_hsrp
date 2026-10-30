@@ -1,0 +1,359 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="pending.aspx.cs" Inherits="pending" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <style>
+        .multiselect-container {
+            max-height: 300px !important;
+            overflow: scroll !important;
+            min-width: 220px !important;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".modelClose").click(function () {
+                $('#Updatemodal').modal('hide');
+            });
+        });
+    </script>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <asp:ScriptManager ID="scrpt" runat="server"></asp:ScriptManager>
+
+    <link href="css2.css" rel="stylesheet" />
+    <!-- Feather icon-->
+
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+
+        <div class="page-body">
+            <div class="container-fluid">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3>Pending</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="Dashboard.aspx"><i data-feather="home"></i></a></li>
+                                <li class="breadcrumb-item">Pending</li>
+
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="modal fade" id="Updatemodal">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myLargeModalLabel">PCB Details Update</h4>
+                                        <asp:Label ID="lblId" runat="server" Visible="false"></asp:Label>
+                                        <asp:Label ID="lblLastICCid" runat="server" Visible="false"></asp:Label>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label>Vehicle No.</label>
+                                                    <asp:Label ID="lblVehicleNo" runat="server" CssClass="form-control"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label>Chassis No.</label>
+                                                    <asp:Label ID="lblChassisNo" runat="server" CssClass="form-control"></asp:Label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label>Order Type</label>
+                                                    <asp:Label ID="lblEngineNo" runat="server" CssClass="form-control"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label>Select Laser No.</label>
+                                                    <br />
+                                                    <asp:ListBox ID="lstDealer" runat="server" SelectionMode="Multiple">
+                                                        <%--<asp:ListItem Text="Nikunj Satasiya" Value="1" />
+                                <asp:ListItem Text="Dev Karathiya" Value="2" />
+                                <asp:ListItem Text="Hiren Dobariya" Value="3" />
+                                <asp:ListItem Text="Vivek Ghadiya" Value="4" />
+                                <asp:ListItem Text="Pratik Pansuriya" Value="5" />--%>
+                                                    </asp:ListBox>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <asp:Label ID="lblError" runat="server" ForeColor="Red" Font-Bold="true"></asp:Label>
+                                        <asp:Button ID="btnupdate" Text="Update" CssClass="btn btn-primary" runat="server" OnClick="btnupdate_Click" />
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <asp:Panel ID="pnlAdd" runat="server">
+
+                        <div class="card-body">
+                            <div class="row gutters" style="margin-bottom: 10px;">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-3">
+                                    <div class="input-group control-dark">
+                                        <asp:TextBox ID="txtStDate" runat="server" type="Date" CssClass="form-control"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group control-dark">
+                                        <asp:TextBox ID="txtEndDate" runat="server" type="Date" CssClass="form-control"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group control-dark">
+                                        <asp:Button ID="btnSubmit" runat="server" Text="Search" CssClass="btn btn-primary" OnClick="btnSubmit_Click"></asp:Button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive theme-scrollbar">
+                                <div id="basic-1_wrapper" class="dataTables_wrapper no-footer">
+                                    <table class="display dataTable no-footer" id="basic-1" role="grid" aria-describedby="basic-1_info">
+                                        <thead>
+                                            <tr role="row">
+                                                <th class="sorting_asc" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: auto;">Date</th>
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Dealer Name</th>
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Embossing Centre</th>
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: auto;">Name</th>
+                                                <%--<th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: auto;">Contact No.</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: auto;">City</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: auto;">State</th>--%>
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Registration No.</th>
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Chassis No.</th>
+                                                <%--<th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Engine No.</th>--%>
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Vehicle Type</th>
+                                                <%--                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Model</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Fuel Type</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Class Type</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Order Type</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Date of Registration</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Date Of Manufacture</th>--%>
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: auto;">Order Status</th>
+
+                                                <th class="sorting" tabindex="0" aria-controls="basic-1" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: auto;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <asp:Repeater ID="rptrUser" runat="server" OnItemCommand="rptrUser_ItemCommand">
+                                                <ItemTemplate>
+                                                    <tr>
+                                                        <td class="table-plus"><%# Eval("orderdate", "{0:dd/MM/yyyy}") %></td>
+                                                        <td><%#Eval("DName") %></td>
+                                                        <td><%#Eval("ems") %></td>
+                                                        <td><%#Eval("name") %></td>
+                                                        <%-- <td><%#Eval("contactno") %></td>
+                                                <td><%#Eval("city") %></td>
+                                                <td><%#Eval("state") %></td>--%>
+                                                        <td><%#Eval("registrationno") %></td>
+                                                        <td><%#Eval("chasisno") %></td>
+                                                        <%--<td><%#Eval("engineno") %></td>--%>
+                                                        <td><%#Eval("vehicletype") %></td>
+                                                        <%-- <td><%#Eval("model") %></td>
+                                                <td><%#Eval("fueltype") %></td>
+                                                <td><%#Eval("classtype") %></td>
+                                                <td><%#Eval("ordertype") %></td>
+                                                <td><%# Eval("registrationdate", "{0:dd/MM/yyyy}") %></td>
+                                                <td><%# Eval("manufacturedate", "{0:dd/MM/yyyy}") %></td>--%>
+                                                        <td>
+                                                            <asp:PlaceHolder ID="PlaceHolder1" runat="server" Visible='<%#Eval("status").ToString() =="1"  %>'>
+                                                                <asp:PlaceHolder ID="PlaceHolder2" runat="server" Visible='<%#Eval("npid").ToString() =="0"  %>'>
+                                                                    <label style="color: red;">Pending</label>
+                                                                </asp:PlaceHolder>
+                                                                <asp:PlaceHolder ID="PlaceHolder4" runat="server" Visible='<%#Eval("npid").ToString() !="0"  %>'>
+                                                                    <label style="color: green;">Completed</label>
+                                                                </asp:PlaceHolder>
+                                                            </asp:PlaceHolder>
+                                                            <asp:PlaceHolder ID="PlaceHolder3" runat="server" Visible='<%#Eval("status").ToString() =="0"  %>'>
+                                                                <label style="color: red;">Cancelled</label>
+                                                            </asp:PlaceHolder>
+                                                        </td>
+
+                                                        <td style="display:flex">
+
+                                                            <asp:LinkButton ID="lnkUpdate" runat="server" CssClass="btn btn-primary btnnew" Font-Size="10px" Width="120" Text=" Edit" CommandArgument='<%#Eval("id") %>' CommandName="edit"></asp:LinkButton>
+                                                           <asp:LinkButton ID="lnkcancal" runat="server" CssClass="btn btn-primary btnnew" Font-Size="10px" Width="120" Text="Cancel" CommandArgument='<%#Eval("id") %>' CommandName="cancel"></asp:LinkButton> 
+                                                        </td>
+                                                    </tr>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </tbody>
+                                    </table>
+                                 
+                                </div>
+                            </div>
+                        </div>
+                    </asp:Panel>
+                    <asp:Panel ID="pnlEdit" runat="server">
+
+                        <div class="card">
+                            <div class="card-header pb-0">
+
+                                <div class="pd-20 bg-white border-radius-4 box-shadow mb-30">
+                                    <div class="clearfix">
+                                        <div class="pull-left">
+                                            <h4 class="text-blue">Sales</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Vehicle No.</label>
+                                                <asp:TextBox ID="txtVehicle" runat="server" CssClass="form-control" placeholder="Enter Vehicle No." required></asp:TextBox>
+                                                <%-- <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="txtVehicle" ForeColor="Red"
+                            ValidationExpression="[a-zA-Z]{2}[a-zA-Z0-9]{0,6}[0-9]{3}$" ErrorMessage="*Valid characters: Alphabets and Numbers only, Without Space" />--%>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Chasis No. (Last Five character)</label>
+                                                <asp:TextBox ID="txtChasisNo" runat="server" CssClass="form-control" placeholder="Enter Chasis No." MaxLength="5" required></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Engine No. (Last Five character)</label>
+                                                <asp:TextBox ID="txtEngineNo" runat="server" CssClass="form-control" placeholder="Enter Engine No." MaxLength="5" required></asp:TextBox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                                        <ContentTemplate>
+                                            <div class="row">
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Name</label>
+                                                        <asp:TextBox ID="txtName" runat="server" CssClass="form-control" placeholder="Enter Name" required></asp:TextBox>
+                                                        <%-- <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="txtName" ForeColor="Red"
+                                    ValidationExpression="[a-zA-Z0-9\s]*$" ErrorMessage="*Valid characters: Alphabets and Numbers Only" />--%>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Contact No.</label>
+                                                        <asp:TextBox ID="txtContactNo" runat="server" CssClass="form-control" placeholder="Enter Contact No." MaxLength="13" type="Number"></asp:TextBox>
+                                                        <%-- <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ForeColor="red"
+                                    ControlToValidate="txtContactNo" ErrorMessage="* Enter Valid Mobile No."
+                                    ValidationExpression="[56789][0-9]{9,12}"></asp:RegularExpressionValidator>--%>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>State</label>
+                                                        <asp:DropDownList ID="ddlState" runat="server" CssClass="form-select" OnSelectedIndexChanged="ddlState_SelectedIndexChanged" AutoPostBack="true">
+                                                            <asp:ListItem disabled="disabled" Selected="selected" Value="">Select State</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                        <%-- <asp:DropDownList ID="ddlState" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlState_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList> --%>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>City</label>
+                                                        <asp:DropDownList ID="ddlCity" runat="server" CssClass="form-select" required>
+                                                            <asp:ListItem disabled="disabled" Selected="selected" Value="">Select City</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Vehicle Type</label>
+                                                        <asp:DropDownList ID="ddlType" runat="server" CssClass="form-select">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Fuel Type</label>
+                                                        <asp:DropDownList ID="ddlFuelType" runat="server" CssClass="form-select">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Class Type</label>
+                                                <asp:DropDownList ID="ddlClassType" runat="server" CssClass="form-select">
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Order Type</label>
+                                                <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-select">
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Date of Registration</label>
+                                                <asp:TextBox ID="txtRegistrationDate" runat="server" CssClass="form-control" placeholder="Select Registration Date" required></asp:TextBox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Date Of Manufacture</label>
+                                                <input id="txtManufactureDate" name="start" class="form-control" runat="server" />
+                                                <%--<asp:TextBox ID="txtManufactureDate" runat="server" CssClass="form-control" type="Date" placeholder="Select Manufacture Date" required></asp:TextBox>--%>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label>TLP Print</label>
+                                                <asp:RadioButtonList ID="chklstTLP" runat="server" CssClass="form-control rbl" RepeatDirection="Horizontal" Width="100%">
+                                                    <asp:ListItem>Yes</asp:ListItem>
+                                                    <asp:ListItem>No</asp:ListItem>
+                                                </asp:RadioButtonList>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row" style="text-align: center; margin-bottom: 15px;">
+
+
+                                        <div class="col-md-12 col-sm-12">
+                                            <asp:Label ID="lblMsg" runat="server" ForeColor="Red"></asp:Label>
+                                            <asp:Button ID="Button1" runat="server" Text="Update" CssClass="btn btn-primary lnkSave" OnClick="btnUpdate_Click" />
+                                                                                    <a href="pending.aspx" class="tip-bottom btn btn-primary">Cancel</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </asp:Panel>
+                </div>
+            </div>
+        </div>
+    </div>
+</asp:Content>
+

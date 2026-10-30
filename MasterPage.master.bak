@@ -1,0 +1,285 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>3GB HSRP</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/font-awesome.css">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/icofont.css">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/themify.css">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/flag-icon.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/feather-icon.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/datatables.css">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="css2.css" />
+
+
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/feather-icon.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/animate.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/chartist.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/prism.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/vector-map.css">
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/bootstrap.css">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/color-1.css" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body onload="startTime()">
+    <form id="form1" runat="server">
+
+        <!-- Loader ends-->
+        <div class="page-wrapper compact-wrapper" id="pageWrapper">
+            <!-- Page Header Start-->
+            <div class="page-header">
+                <div class="header-wrapper row m-0">
+                    <div class="header-logo-wrapper col-auto p-0">
+                        <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"></i></div>
+                        <div class="logo-header-main">
+                            <a href="index.html">
+                                <img class="img-fluid for-light img-100" src="assets/images/logo/1.png" alt=""><img class="img-fluid for-dark" src="assets/images/logo/1.png" alt=""></a>
+                        </div>
+                    </div>
+                    <div class="left-header col horizontal-wrapper ps-0">
+                        <div class="left-menu-header">
+                            <ul class="app-list">
+                                <li class="onhover-dropdown"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="nav-right col-6 pull-right right-header p-0">
+                        <ul class="nav-menus">
+
+
+                            <li>
+                                <div class="mode"><i class="fa fa-moon-o"></i></div>
+                            </li>
+
+
+
+                            <li class="profile-nav onhover-dropdown">
+                                <div class="account-user"><i data-feather="user"></i></div>
+                                <ul class="profile-dropdown onhover-show-div">
+                                    <%--  <li><a href="user-profile.html"><i data-feather="user"></i><span>Account</span></a></li>
+                                    <li><a href="email_inbox.html"><i data-feather="mail"></i><span>Inbox</span></a></li>
+                                    <li><a href="edit-profile.html"><i data-feather="settings"></i><span>Settings</span></a></li>--%>
+                                    <li><a href="Logout.aspx"><i data-feather="log-in"></i><span>Log out</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <script class="result-template" type="text/x-handlebars-template">
+                        <div class="ProfileCard u-cf">
+                            <div class="ProfileCard-avatar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay m-0">
+                                    <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg>
+                            </div>
+                            <div class="ProfileCard-details">
+                                <div class="ProfileCard-realName">{{name}}</div>
+                            </div>
+                        </div>
+                    </script>
+                    <script class="empty-template" type="text/x-handlebars-template">
+                        <div class="EmptyMessage">Your search turned up 0 results. This most likely means the backend is down, yikes!</div>
+                    </script>
+                </div>
+            </div>
+            <!-- Page Header Ends-->
+            <div class="page-body-wrapper">
+                <!-- Page Sidebar Start-->
+                <div class="sidebar-wrapper">
+                    <div>
+                        <div class="logo-wrapper">
+                            <a href="Dashboard.aspx">
+                                <img class="img-fluid for-light" src="assets/images/logo/1.png" alt=""></a>
+                            <div class="back-btn"><i data-feather="grid"></i></div>
+                            <div class="toggle-sidebar icon-box-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"></i></div>
+                        </div>
+                        <div class="logo-icon-wrapper">
+                            <a href="Dashboard.aspx">
+                                <div class="icon-box-sidebar"><i data-feather="grid"></i></div>
+                            </a>
+                        </div>
+                        <nav class="sidebar-main">
+                            <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+                            <div id="sidebar-menu">
+                                <ul class="sidebar-links" id="simple-bar">
+                                    <li class="back-btn">
+                                        <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
+                                    </li>
+
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="Dashboard.aspx"><i data-feather="home"></i><span class="lan-3">Dashboard</span></a>
+                                        <%--<ul class="sidebar-submenu">
+                                            <li><a class="lan-4" href="index.html">Default</a></li>
+                                            <li><a class="lan-5" href="dashboard-02.html">Ecommerce</a></li>
+                                        </ul>--%>
+                                    </li>
+                                    <%--                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title link-nav" href="leaserno-search.aspx"><i data-feather="search"></i><span>Search Result</span></a></li>--%>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="airplay"></i><span>Master</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="user.aspx">User</a></li>
+                                            <li><a href="state.aspx">State</a></li>
+                                            <li><a href="city.aspx">City</a></li>
+                                            <%--<li><a href="pincode.aspx">Pincode</a></li>--%>
+                                            <li><a href="vechicle.aspx">Vechicle Type</a></li>
+                                            <li><a href="vechicle-class.aspx">Vechicle Class</a></li>
+                                            <li><a href="manufaturer.aspx">Manufaturer</a></li>
+                                            <%--<li><a href="online-rate.aspx">Online rate</a></li>--%>
+                                            <li><a href="fuel-type.aspx">Fuel Type</a></li>
+                                            <li><a href="size-master.aspx">Size Master</a></li>
+                                            <li><a href="order-type.aspx">Order Type</a></li>
+                                            <li><a href="rate-chart.aspx">Rate Chart</a></li>
+                                            <%--<li><a href="rate-daman.aspx">Rate Chart Daman</a></li>--%>
+                                            <%--<li><a href="frame-rate.aspx">Frame Rate</a></li>--%>
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="box"></i><span>Online Rate Master</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="online-rate.aspx">Online Rate With Color Sticker</a></li>
+                                            <li><a href="online-rate-ev.aspx">Online Rate For EV</a></li>
+                                            <li><a href="online-rate-replacement.aspx">Online Rate For Replacement</a></li>
+                                            <li><a href="online-rate-sticker.aspx">Online Rate For Color Sticker</a></li>
+                                            <li><a href="online-rate-tractor.aspx">Online Rate For Tractor & Trailer</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="box"></i><span>Online Verification</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="verification-pending-color-sticker.aspx">Only Colour Sticker</a></li>
+                                            <li><a href="verification-pending-replacement.aspx">Replacement Retain Transfer</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="box"></i><span>Online Pending</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="pending-high-security-registration-plate-for-electric-vehicle.aspx">High Security Registration Plate For Electric Vehicle</a></li>
+                                            <li><a href="pending-high-security-registration-plate-for-tractor-trailer.aspx">High Security Registration Plate For Tractor Trailer</a></li>
+                                            <li><a href="pending-high-security-registration-plate-with-colour-sticker.aspx">High Security Registration Plate With Colour Sticker</a></li>
+                                            <li><a href="pending-only-colour-sticker.aspx">Only Colour Sticker</a></li>
+                                            <li><a href="pending-replacement-retain-transfer.aspx">Replacement Retain Transfer</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="box"></i><span>Online Completed</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="completed-high-security-registration-plate-for-electric-vehicle.aspx">High Security Registration Plate For Electric Vehicle</a></li>
+                                            <li><a href="completed-high-security-registration-plate-for-tractor-trailer.aspx">High Security Registration Plate For Tractor Trailer</a></li>
+                                            <li><a href="completed-high-security-registration-plate-with-colour-sticker.aspx">High Security Registration Plate With Colour Sticker</a></li>
+                                            <li><a href="completed-only-colour-sticker.aspx">Only Colour Sticker</a></li>
+                                            <li><a href="completed-replacement-retain-transfer.aspx">Replacement Retain Transfer</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="box"></i><span>Stock</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="add.aspx">Add</a></li>
+                                            <li><a href="view.aspx">View</a></li>
+                                            <li><a href="stock-transfer.aspx">Stock Transfer</a></li>
+                                            <li><a href="stock-return.aspx">Stock Return</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="shopping-bag"></i><span>Dealer Order</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="pending.aspx">Pending</a></li>
+                                            <li><a href="completed.aspx">Completed</a></li>
+
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title link-nav" href="embossing.aspx"><i data-feather="globe"></i><span>Embossing Centres</span></a></li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title link-nav" href="dealers.aspx"><i data-feather="globe"></i><span>Dealers</span></a></li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title link-nav" href="oem.aspx"><i data-feather="globe"></i><span>OEM</span></a></li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title link-nav" href="rto-dto.aspx"><i data-feather="globe"></i><span>RTO/DTO</span></a></li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title link-nav" href="vahaan-update.aspx"><i data-feather="globe"></i><span>Vahaan Update</span></a></li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="users"></i><span>Account</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="payment-confirmation.aspx">Payment Confirm </a></li>
+                                            <li><a href="account-details.aspx">Account Details</a></li>
+                                            <li><a href="online-failed-transaction.aspx">Online Faild Transaction</a></li>
+                                            <li><a href="online-transaction.aspx">Online Transaction</a></li>
+
+                                        </ul>
+                                    </li>
+
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="layout"></i><span>Report</span></a>
+                                        <ul class="sidebar-submenu">
+                                            <li><a href="party-ledger.aspx">Party Ledger</a></li>
+                                            <li><a href="dealer-stock.aspx">Dealer Stock</a></li>
+                                            <li><a href="dealer-sales.aspx">Dealer Sales</a></li>
+                                            <li><a href="online-order.aspx">Online Order</a></li>
+                                            <li><a href="stock-state-wise.aspx">Stock State Wise</a></li>
+                                            <li><a href="stock-dealer-wise.aspx">Stock Dealer Wise</a></li>
+                                            <li><a href="sales-state-wise.aspx">Sales State Wise</a></li>
+                                            <li><a href="sales-dealer-wise.aspx">Sales Dealer Wise</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title link-nav" href="nic-testng.aspx"><i data-feather="globe"></i><span>Vahaan Stagging</span></a></li>
+                                </ul>
+                            </div>
+                            <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Page Sidebar Ends-->
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+                <!-- footer start-->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6 p-0 footer-left">
+                                <p class="mb-0">Copyright © 2023 Parken Solution. All rights reserved.</p>
+                            </div>
+                            <div class="col-md-6 p-0 footer-right">
+                                <%-- <p class="mb-0">Hand-crafted & made with <i class="fa fa-heart font-danger"></i></p>--%>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <style>
+                .btn {
+                    font-size: 12px;
+                }
+            </style>
+            <!-- latest jquery-->
+            <script src="assets/js/jquery-3.6.0.min.js"></script>
+
+            <!-- Bootstrap js-->
+            <script src="assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+            <!-- feather icon js-->
+            <script src="assets/js/icons/feather-icon/feather.min.js"></script>
+            <script src="assets/js/icons/feather-icon/feather-icon.js"></script>
+            <!-- scrollbar js-->
+            <script src="assets/js/scrollbar/simplebar.js"></script>
+            <script src="assets/js/scrollbar/custom.js"></script>
+            <!-- Sidebar jquery-->
+            <script src="assets/js/config.js"></script>
+            <script src="assets/js/sidebar-menu.js"></script>
+            <script src="assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
+            <script src="assets/js/datatable/datatables/datatable.custom.js"></script>
+            <script src="assets/js/tooltip-init.js"></script>
+            <!-- Template js-->
+            <script src="assets/js/script.js"></script>
+
+
+        </div>
+    </form>
+</body>
+</html>

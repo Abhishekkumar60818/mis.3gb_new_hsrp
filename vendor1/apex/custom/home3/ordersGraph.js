@@ -1,0 +1,1 @@
+var options={chart:{height:290,type:"donut"},labels:["Books","Gifts","Mobiles"],series:[6e4,45e3,15e3],legend:{position:"bottom"},dataLabels:{enabled:!1},stroke:{width:0},colors:["#1090d6","#ffaf2b","#fe7f58"],tooltip:{y:{formatter:function(e){return"$"+e}}}},chart=new ApexCharts(document.querySelector("#recentOrders"),options);chart.render();

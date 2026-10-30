@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class seller_Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        AdminLoginData ad = new AdminLoginData();
+        DataSet ds = ad.getDetails("select (SELECT count(id) FROM sellersales WHERE status=0 and npid=0 and sellerid in(SELECT d.id FROM distibutor d WHERE d.status=1 and (d.id=" + SessionVeriables.UserId + " or d.extra=" + SessionVeriables.UserId + ")) ) as pending,(SELECT count(id) FROM sellersales WHERE status=0 and npid=1 and sellerid in(SELECT d.id FROM distibutor d WHERE d.status=1 and (d.id=" + SessionVeriables.UserId + " or d.extra=" + SessionVeriables.UserId + "))) as Completed,(SELECT count(id) FROM sellersales WHERE  sellerid in(SELECT d.id FROM distibutor d WHERE d.status=1 and (d.id=" + SessionVeriables.UserId + " or d.extra=" + SessionVeriables.UserId + "))) as Total,(SELECT count(id) FROM sellersales WHERE status=0 and sellerid in(SELECT d.id FROM distibutor d WHERE d.status=1 and (d.id=" + SessionVeriables.UserId + " or d.extra=" + SessionVeriables.UserId + "))) as cancelled");
+
+        lblRejectedOrder.Text = ds.Tables[0].Rows[0]["cancelled"].ToString();
+        lblCompletedOrder.Text = ds.Tables[0].Rows[0]["Completed"].ToString();
+        lblGeneratedOrder.Text = ds.Tables[0].Rows[0]["pending"].ToString();
+        lblTotalOrders.Text = ds.Tables[0].Rows[0]["Total"].ToString();
+        //Label1.Text = SessionVeriables.UserId.ToString();
+    }
+}

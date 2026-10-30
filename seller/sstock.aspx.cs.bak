@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class seller_sstock : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!IsPostBack)
+            {
+                pnlView.Visible = true;
+                AdminLoginData ad = new AdminLoginData();
+                DataSet ds = ad.getDetails("select s.id,s.rateid,sh.date,s.laserno,si.sstatus,size.sizes,v.type,(case when (select sic.sstatus from stock sc join salesitem sic join saleheader shc   where shc.status=1  and sic.hid=shc.id and sic.status=1 and sc.id=sic.sid and sc.laserno=s.laserno order by sic.id desc limit 1)>0 then (select name FROM distibutor where id=(select sha.sellerid from stock sa join selleritem sia on sia.itemid=sa.id join sellersales sha on sha.id=sia.headerid where sa.laserno=s.laserno order by sia.id desc limit 1)) else (select name FROM distibutor where id=sh.did) end)as soldstatus,(case when (select shz.registrationno from stock sz join selleritem siz on siz.itemid=sz.id join sellersales shz on shz.id=siz.headerid where sz.laserno=s.laserno order by siz.id desc limit 1)<>'' then (select sha.registrationno from stock sa join selleritem sia on sia.itemid=sa.id join sellersales sha on sha.id=sia.headerid where sa.laserno=s.laserno order by sia.id desc limit 1) else 'Not Used' end ) as RegistrationNo from stock s join salesitem si join saleheader sh join size join vehicleclass v where size.id=s.sizeid and v.id=s.classid and sh.status=1 and sh.did=" + SessionVeriables.UserId + " and si.hid=sh.id and si.status=1 and s.id=si.sid");
+                rptrUser.DataSource = ds;
+                rptrUser.DataBind();
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+}

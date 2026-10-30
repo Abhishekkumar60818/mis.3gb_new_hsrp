@@ -1,0 +1,255 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class seller_spendingorder : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!IsPostBack)
+            {
+                AdminLoginData ad = new AdminLoginData();
+                DataSet ds = ad.getDetails("select s.id,s.name,s.contactno,s.state,s.city,s.registrationno,s.chasisno,s.engineno,s.vehicletype,s.model,s.registrationdate,s.fueltype,s.ordertype,s.manufacturedate,s.sellerid,s.npid,s.status,s.classtype,s.orderdate,d.name as DName,s.tlp from sellersales s join distibutor d where s.status=1 and s.npid=0 and s.sellerid=d.id and s.sellerid in(SELECT d.id FROM distibutor d WHERE d.status=1 and (d.id=" + SessionVeriables.UserId + " or d.extra=" + SessionVeriables.UserId + ")) and s.npid=0");
+                rptrUser.DataSource = ds;
+                rptrUser.DataBind();
+                //CityDetails msdata = new CityDetails();
+                //DataSet ds1 = msdata.getDetails("select * from size where status=1 order by sizes");
+                //ddlSize.DataSource = ds1;
+                //ddlSize.DataTextField = "sizes";
+                //ddlSize.DataValueField = "id";
+                //ddlSize.DataBind();
+                //ddlSize.Items.Insert(0, "Select Size");
+                //ddlSize.SelectedIndex = 0;
+
+                //DataSet dsClass = msdata.getDetails("select * from vehicleclass where status=1 order by type");
+                //ddlClass.DataSource = dsClass;
+                //ddlClass.DataTextField = "type";
+                //ddlClass.DataValueField = "id";
+                //ddlClass.DataBind();
+                //ddlClass.Items.Insert(0, "Select Class");
+                //ddlClass.SelectedIndex = 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+
+    protected void btnupdate_Click(object sender, EventArgs e)
+    {
+        //foreach (ListItem item in lstDealer.Items)
+        //{
+        //    if (item.Selected)
+        //    {
+
+        if (txtRearLaserNo.Text != "" && txtFrontLaserNo.Text != "")
+        {
+            if (txtRearLaserNo.Text != txtFrontLaserNo.Text)
+            {
+                StockData st = new StockData(txtFrontLaserNo.Text);
+                DataSet dsF = st.getDetails("select si.id,s.id as stockid,s.rateid,sh.date,s.laserno,si.sstatus from stock s join salesitem si join saleheader sh where sh.status=1 and sh.did=" + SessionVeriables.UserId + " and si.hid=sh.id and si.status=1 and s.id=si.sid and si.sstatus=0 and s.laserno='" + txtFrontLaserNo.Text + "'");
+                if (dsF.Tables[0].Rows.Count > 0)
+                {
+                    DataSet dsR = st.getDetails("select si.id,s.id as stockid,s.rateid,sh.date,s.laserno,si.sstatus from stock s join salesitem si join saleheader sh where sh.status=1 and sh.did=" + SessionVeriables.UserId + " and si.hid=sh.id and si.status=1 and s.id=si.sid and si.sstatus=0 and s.laserno='" + txtRearLaserNo.Text + "'");
+                    if (dsR.Tables[0].Rows.Count > 0)
+                    {
+                        SaleItemData sitem = new SaleItemData(int.Parse(dsF.Tables[0].Rows[0]["id"].ToString()));
+                        SellerItemData si = new SellerItemData();
+                        si.headerid = int.Parse(lblId.Text);
+                        si.itemid = sitem.sid;
+                        si.Save();
+                        SaleItemData sd = new SaleItemData();
+                        sd.sstatus = 1;
+                        sd.updateSold(int.Parse(dsF.Tables[0].Rows[0]["id"].ToString()));
+
+
+                        SaleItemData siteR = new SaleItemData(int.Parse(dsR.Tables[0].Rows[0]["id"].ToString()));
+                        SellerItemData siR = new SellerItemData();
+                        siR.headerid = int.Parse(lblId.Text);
+                        siR.itemid = siteR.sid;
+                        siR.Save();
+                        SaleItemData sdR = new SaleItemData();
+                        sdR.sstatus = 1;
+                        sdR.updateSold(int.Parse(dsR.Tables[0].Rows[0]["id"].ToString()));
+                        string vflag = "";
+                        if (ddlFlag.SelectedItem.ToString() == "New Both HSRP")
+                        {
+                            vflag = "NB";
+                        }
+                        else if (ddlFlag.SelectedItem.ToString() == "Duplicate Both HSRP")
+                        {
+                            vflag = "DB";
+                        }
+                        else if (ddlFlag.SelectedItem.ToString() == "Duplicate Front HSRP")
+                        {
+                            vflag = "DF";
+                        }
+                        else if (ddlFlag.SelectedItem.ToString() == "Duplicate Rear HSRP")
+                        {
+                            vflag = "DR";
+                        }
+                        else if (ddlFlag.SelectedItem.ToString() == "Old Both HSRP")
+                        {
+                            vflag = "OB";
+                        }
+
+
+                        si.getDetails("update sellersales set npid=1,odtype='" + vflag + "'   where id=" + lblId.Text);
+                        si.getDetails("update salesitem set sstatus =0  where id=" + lblId.Text);
+                        getDatare();
+                        ScriptManager.RegisterStartupScript(Page, GetType(), "Whatever", "window.open('../pdf/tlpprint.aspx?id=" + int.Parse(lblId.Text) + "','_blank')", true);
+                    }
+                    else
+                    {
+                        lblError.Text = "Rear laser no. not exist in dealer stock";
+                        ClientScript.RegisterStartupScript(this.GetType(), "alert", "ShowPopup();", true);
+
+                        //ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Hi Do you want to update';$('#Updatemodal').modal('show');});</script>", false);
+                    }
+                }
+                else
+                {
+                    lblError.Text = "Both laser can't be same";
+                    ClientScript.RegisterStartupScript(this.GetType(), "alert", "ShowPopup();", true);
+
+                    //ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Hi Do you want to update';$('#Updatemodal').modal('show');});</script>", false);
+                }
+            }
+            else
+            {
+                lblError.Text = "Front laser no. not exist in dealer stock";
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "ShowPopup();", true);
+
+                //ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Hi Do you want to update';$('#Updatemodal').modal('show');});</script>", false);
+            }
+
+        }
+        else if (txtRearLaserNo.Text == "" && txtFrontLaserNo.Text != "")
+        {
+            StockData st = new StockData(txtFrontLaserNo.Text);
+            DataSet dsF = st.getDetails("select si.id,s.id as stockid,s.rateid,sh.date,s.laserno,si.sstatus from stock s join salesitem si join saleheader sh where sh.status=1 and sh.did=" + SessionVeriables.UserId + " and si.hid=sh.id and si.status=1 and s.id=si.sid and si.sstatus=0 and s.laserno='" + txtFrontLaserNo.Text + "'");
+            if (dsF.Tables[0].Rows.Count > 0)
+            {
+                SaleItemData sitem = new SaleItemData(int.Parse(dsF.Tables[0].Rows[0]["id"].ToString()));
+                SellerItemData si = new SellerItemData();
+                si.headerid = int.Parse(lblId.Text);
+                si.itemid = sitem.sid;
+                si.Save();
+                SaleItemData sd = new SaleItemData();
+                sd.sstatus = 1;
+                sd.updateSold(int.Parse(dsF.Tables[0].Rows[0]["id"].ToString()));
+
+                si.getDetails("update sellersales set npid=1 where id=" + lblId.Text);
+                getDatare();
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Whatever", "window.open('../pdf/tlpprint.aspx?id=" + int.Parse(lblId.Text) + "','_blank')", true);
+
+            }
+            else
+            {
+                lblError.Text = "Front laser no. not exist in dealer stock";
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "ShowPopup();", true);
+
+                //ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Hi Do you want to update';$('#Updatemodal').modal('show');});</script>", false);
+            }
+        }
+        else if (txtRearLaserNo.Text != "" && txtFrontLaserNo.Text == "")
+        {
+            StockData st = new StockData(txtFrontLaserNo.Text);
+
+            DataSet dsR = st.getDetails("select si.id,s.id as stockid,s.rateid,sh.date,s.laserno,si.sstatus from stock s join salesitem si join saleheader sh where sh.status=1 and sh.did=" + SessionVeriables.UserId + " and si.hid=sh.id and si.status=1 and s.id=si.sid and si.sstatus=0 and s.laserno='" + txtRearLaserNo.Text + "'");
+            if (dsR.Tables[0].Rows.Count > 0)
+            {
+                SaleItemData siteR = new SaleItemData(int.Parse(dsR.Tables[0].Rows[0]["id"].ToString()));
+                SellerItemData siR = new SellerItemData();
+                siR.headerid = int.Parse(lblId.Text);
+                siR.itemid = siteR.sid;
+                siR.Save();
+                SaleItemData sdR = new SaleItemData();
+                sdR.sstatus = 1;
+                sdR.updateSold(int.Parse(dsR.Tables[0].Rows[0]["id"].ToString()));
+
+
+
+                siR.getDetails("update sellersales set npid=1 where id=" + lblId.Text);
+                getDatare();
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Whatever", "window.open('../pdf/tlpprint.aspx?id=" + int.Parse(lblId.Text) + "','_blank')", true);
+            }
+            else
+            {
+                lblError.Text = "Rear laser no. not exist in dealer stock";
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "ShowPopup();", true);
+
+                //ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Hi Do you want to update';$('#Updatemodal').modal('show');});</script>", false);
+            }
+
+        }
+        else if (txtRearLaserNo.Text == "" && txtFrontLaserNo.Text == "")
+        {
+            //counters = 0;
+        }
+
+
+        //     Response.Redirect("spendingorder.aspx");
+    }
+
+    private void getDatare()
+    {
+        AdminLoginData ad = new AdminLoginData();
+        DataSet ds = ad.getDetails("select s.id,s.name,s.contactno,s.state,s.city,s.registrationno,s.chasisno,s.engineno,s.vehicletype,s.model,s.registrationdate,s.fueltype,s.ordertype,s.manufacturedate,s.sellerid,s.npid,s.status,s.classtype,s.orderdate,d.name as DName,s.tlp from sellersales s join distibutor d where s.status=1 and s.npid=0 and s.sellerid=d.id and s.sellerid in(SELECT d.id FROM distibutor d WHERE d.status=1 and (d.id=" + SessionVeriables.UserId + " or d.extra=" + SessionVeriables.UserId + ")) and s.npid=0");
+        rptrUser.DataSource = ds;
+        rptrUser.DataBind();
+    }
+
+    protected void rptrUser_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        txtRearLaserNo.Text = "";
+        txtFrontLaserNo.Text = "";
+        int ids = int.Parse(e.CommandArgument.ToString());
+        string comm = e.CommandName;
+        lblId.Text = ids.ToString();
+        SellerSalesData sd = new SellerSalesData(ids);
+        lblChassisNo.Text = sd.chasisno;
+        lblEngneNo.Text = sd.engineno;
+        lblVehicleNo.Text = sd.registrationno;
+        //DataSet ds1 = sd.getDetails("select si.id,s.id as stockid,s.rateid,sh.date,s.laserno,si.sstatus from stock s join salesitem si join saleheader sh where sh.status=1 and sh.did=" + SessionVeriables.UserId + " and si.hid=sh.id and si.status=1 and s.id=si.sid and si.sstatus=0");
+        //lstDealer.DataSource = ds1;
+        //lstDealer.DataTextField = "laserno";
+        //lstDealer.DataValueField = "id";
+        //lstDealer.DataBind();
+        ClientScript.RegisterStartupScript(this.GetType(), "alert", "ShowPopup();", true);
+        //ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Hi Do you want to update';$('#Updatemodal').modal('show');});</script>", false);
+
+    }
+
+    protected void ddlClass_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //string qr = "";
+        //if (ddlClass.SelectedItem.ToString() != "Select Class")
+        //{
+        //    qr += " and s.classid=" + ddlClass.SelectedValue.ToString();
+        //}
+        //if (ddlSize.SelectedItem.ToString() != "Select Size")
+        //{
+        //    qr += " and s.sizeid = " + ddlSize.SelectedValue.ToString();
+        //}
+        //OnlineOrderData sd = new OnlineOrderData();
+        //DataSet ds1 = sd.getDetails("select si.id,s.id as stockid,s.rateid,sh.date,s.laserno,si.sstatus from stock s join salesitem si join saleheader sh where sh.status=1 and sh.did=" + SessionVeriables.UserId + " and si.hid=sh.id and si.status=1 and s.id=si.sid and si.sstatus=0  " + qr);
+        //lstDealer.DataSource = ds1;
+        //lstDealer.DataTextField = "laserno";
+        //lstDealer.DataValueField = "id";
+        //lstDealer.DataBind();
+        ClientScript.RegisterStartupScript(this.GetType(), "alert", "ShowPopup();", true);
+
+        //ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Hi Do you want to update';$('#Updatemodal').modal('show');});</script>", false);
+    }
+}

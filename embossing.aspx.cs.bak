@@ -1,0 +1,361 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class enbossing : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            try
+            {
+                pnlAdd.Visible = false;
+                pnlUpdate.Visible = false;
+                pnlView.Visible = true;
+                DistibutorData ad = new DistibutorData();
+                DataSet ds = ad.getDetails("Select s.id,s.name,s.designation,s.contactperson,s.contactno,s.email,s.address,s.username,s.GSTNo,s.DType,s.status,s.date,(select city from city where id=s.city) as city,(select name from state where id=s.state) as state,s.password as pass,(SELECT name from distibutor where id=s.extra) as Stockists,s.code from distibutor s where s.DType='Embossing'");
+                rptrUser.DataSource = ds;
+                rptrUser.DataBind();
+
+                DataSet ds1 = ad.getDetails("SELECT * FROM state WHERE status=1 order by name");
+                ddlState.DataSource = ds1;
+                ddlState.DataTextField = "name";
+                ddlState.DataValueField = "id";
+                ddlState.DataBind();
+                ddlState.Items.Insert(0, "Select State");
+                ddlState.SelectedIndex = 0;
+
+                uddlState.DataSource = ds1;
+                uddlState.DataTextField = "name";
+                uddlState.DataValueField = "id";
+                uddlState.DataBind();
+                uddlState.Items.Insert(0, "Select State");
+                uddlState.SelectedIndex = 0;
+
+                DataSet DsStockist = ad.getDetails("SELECT d.id,CONCAT(d.name, ',', (select city from city where id=d.city)) as name FROM distibutor d WHERE d.status=1 and  (d.DType='Embossing' or d.DType='Stockists Cum Dealer') order by name");
+                ddlStockists.DataSource = DsStockist;
+                ddlStockists.DataTextField = "name";
+                ddlStockists.DataValueField = "id";
+                ddlStockists.DataBind();
+                ddlStockists.Items.Insert(0, "Company");
+                ddlStockists.SelectedIndex = 0;
+
+                eddlStockists.DataSource = DsStockist;
+                eddlStockists.DataTextField = "name";
+                eddlStockists.DataValueField = "id";
+                eddlStockists.DataBind();
+                eddlStockists.Items.Insert(0, "Company");
+                eddlStockists.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                msg = msg.Replace("\r", string.Empty);
+                msg = msg.Replace("\n", string.Empty);
+                ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+            }
+        }
+    }
+    protected void btnSubmit_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            DistibutorData ald = new DistibutorData(txtUserName.Text);
+            if (!ald.HasValue)
+            {
+                //string ddate = DateTime.Now.AddHours(12).AddMinutes(30).ToString("yyyy/MM/dd");
+                //string[] ss = ddate.Split('/');
+                //string s = ss[2] + "/" + ss[1] + "/" + ss[0];
+                var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+                var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
+                DistibutorData ad = new DistibutorData();
+                ad.name = txtName.Text;
+                ad.contactno = txtContactNo.Text;
+                ad.email = txtEmail.Text;
+                ad.state = ddlState.SelectedValue.ToString();
+                ad.address = txtAddress.Text;
+                ad.date = Convert.ToDateTime(now.ToString("dd-MM-yyyy HH:mm:ss"));
+                ad.city = ddlCity.SelectedValue.ToString();
+                ad.username = txtUserName.Text;
+                ad.password = txtPassword.Text;
+                if (ddlStockists.SelectedValue.ToString() != "Company")
+                {
+                    ad.extra = int.Parse(ddlStockists.SelectedValue.ToString());
+                }
+                else
+                {
+                    ad.extra = 0;
+                }
+                //ad.extra = int.Parse(ddlStockists.SelectedValue.ToString());
+                ad.GSTNo = txtGSTNo.Text;
+                ad.DType = ddlType.SelectedItem.ToString();
+                ad.contactperson = txtContactPerson.Text;
+                ad.designation = txtDesignation.Text;
+                ad.Save();
+                AccountData ac = new AccountData();
+                ac.name = txtUserName.Text;
+                ac.Save();
+                Response.Redirect("embossing.aspx");
+            }
+            else
+            {
+                lblMsg.Text = "* User Name already exist";
+                lblMsg.ForeColor = System.Drawing.Color.Red;
+                lblMsg.Font.Bold = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+    protected void btnUpdate_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (eddlStockists.SelectedValue.ToString() != lblId.Text)
+            {
+                DistibutorData ad = new DistibutorData();
+                ad.name = utxtName.Text;
+                ad.contactno = utxtContactNo.Text;
+                ad.email = (utxtEmail.Text);
+                ad.address = utxtAddress.Text;
+                ad.state = uddlState.SelectedValue.ToString();
+                ad.city = uddlCity.SelectedValue.ToString();
+                ad.GSTNo = etxtGSTNo.Text;
+                ad.DType = eddlType.SelectedItem.ToString();
+                ad.password = utxtPassword.Text;
+                ad.contactperson = utxtContactPerson.Text;
+                ad.designation = utxtDesignation.Text;
+                if (eddlStockists.SelectedValue.ToString() != "Company")
+                {
+                    ad.extra = int.Parse(eddlStockists.SelectedValue.ToString());
+                }
+                else
+                {
+                    ad.extra = 0;
+                }
+                ad.updateadmin(int.Parse(lblId.Text));
+                Response.Redirect("embossing.aspx");
+            }
+            else
+            {
+                ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = 'Update Embossing and selected Embossing are same not allowed';$('#alert-modal').modal('show');});</script>", false);
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+    protected void lnkbtnAdd_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            pnlAdd.Visible = true;
+            pnlUpdate.Visible = false;
+            pnlView.Visible = false;
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+
+    protected void rptrUser_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        try
+        {
+            int ids = int.Parse(e.CommandArgument.ToString());
+            string comm = e.CommandName;
+            lblId.Text = ids.ToString();
+            if (comm == "edit")
+            {
+                DistibutorData ad = new DistibutorData(ids);
+                utxtName.Text = ad.name;
+                utxtContactNo.Text = ad.contactno;
+                utxtEmail.Text = ad.email;
+                utxtAddress.Text = ad.address;
+                utxtPassword.Text = ad.password;
+                StateDetails sd = new StateDetails(int.Parse(ad.state));
+                uddlState.ClearSelection();
+                uddlState.Items.FindByText(sd.name).Selected = true;
+                DataSet ds1 = ad.getDetails("SELECT * FROM city WHERE status=1 and state='" + sd.name + "'");
+                uddlCity.DataSource = ds1;
+                uddlCity.DataTextField = "city";
+                uddlCity.DataValueField = "id";
+                etxtGSTNo.Text = ad.GSTNo;
+                utxtContactPerson.Text = ad.contactperson;
+                utxtDesignation.Text = ad.designation;
+                eddlType.ClearSelection();
+                eddlType.Items.FindByText(ad.DType).Selected = true;
+                if (ad.DType == "Embossing")
+                {
+                    eddlStockists.SelectedIndex = 0;
+                    eddlStockists.Enabled = false;
+                }
+                if (ad.extra != 0)
+                {
+                    eddlStockists.ClearSelection();
+                    DistibutorData dstr = new DistibutorData(ad.extra);
+                    CityDetails citys = new CityDetails(int.Parse(dstr.city));
+                    eddlStockists.Items.FindByText(dstr.name + "," + citys.city).Selected = true;
+                }
+                uddlCity.DataBind();
+                //uddlCity.Items.Insert(0, "Select City");
+                //uddlCity.SelectedIndex = 0;
+                CityDetails cty = new CityDetails(int.Parse(ad.city));
+                uddlCity.ClearSelection();
+                uddlCity.Items.FindByText(cty.city).Selected = true;
+                pnlAdd.Visible = false;
+                pnlUpdate.Visible = true;
+                pnlView.Visible = false;
+            }
+            else if (comm == "delete")
+            {
+                DistibutorData ad = new DistibutorData();
+                DataSet ds = ad.getDetails("update distibutor set status=0 where id=" + ids);
+                DistibutorData ad1 = new DistibutorData(ids);
+                AccountData ac1 = new AccountData(ad1.username);
+                AccountData ac = new AccountData();
+                ac.Block(ac1.id);
+
+                Response.Redirect("embossing.aspx");
+            }
+            else if (comm == "unblock")
+            {
+                DistibutorData ad = new DistibutorData();
+                DataSet ds = ad.getDetails("update distibutor set status=1 where id=" + ids);
+                DistibutorData ad1 = new DistibutorData(ids);
+                AccountData ac1 = new AccountData(ad1.username);
+                AccountData ac = new AccountData();
+                ac.UnBlock(ac1.id);
+                Response.Redirect("embossing.aspx");
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+
+    protected void ddlState_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (ddlState.SelectedItem.ToString() != "Select State")
+            {
+                DistibutorData ad = new DistibutorData();
+                DataSet ds1 = ad.getDetails("SELECT * FROM city WHERE status=1 and state='" + ddlState.SelectedItem.ToString() + "'");
+                ddlCity.DataSource = ds1;
+                ddlCity.DataTextField = "city";
+                ddlCity.DataValueField = "id";
+                ddlCity.DataBind();
+                ddlCity.Items.Insert(0, "Select City");
+                ddlCity.SelectedIndex = 0;
+            }
+            else
+            {
+                lblMsg.Text = "* Select State First";
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+
+    protected void uddlState_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (uddlState.SelectedItem.ToString() != "Select State")
+            {
+                DistibutorData ad = new DistibutorData();
+                DataSet ds1 = ad.getDetails("SELECT * FROM city WHERE status=1 and state='" + uddlState.SelectedItem.ToString() + "'");
+                uddlCity.DataSource = ds1;
+                uddlCity.DataTextField = "city";
+                uddlCity.DataValueField = "id";
+                uddlCity.DataBind();
+                uddlCity.Items.Insert(0, "Select City");
+                uddlCity.SelectedIndex = 0;
+            }
+            else
+            {
+                Label1.Text = "* Select State First";
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+
+    protected void ddlType_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (ddlType.SelectedItem.ToString() == "Embossing" || ddlType.SelectedItem.ToString() == "Stockists Cum Dealer")
+            {
+                ddlStockists.SelectedIndex = 0;
+                ddlStockists.Enabled = false;
+            }
+            else
+            {
+                ddlStockists.Enabled = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+    protected void eddlType_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (eddlType.SelectedItem.ToString() == "Embossing" || eddlType.SelectedItem.ToString() == "Stockists Cum Dealer")
+            {
+                eddlStockists.SelectedIndex = 0;
+                eddlStockists.Enabled = false;
+            }
+            else
+            {
+                eddlStockists.Enabled = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            msg = msg.Replace("\r", string.Empty);
+            msg = msg.Replace("\n", string.Empty);
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "script", "<script type='text/javascript'>$( document ).ready(function() {  document.getElementById('lableid').innerHTML = '" + msg.Trim() + "';$('#alert-modal').modal('show');});</script>", false);
+        }
+    }
+}
